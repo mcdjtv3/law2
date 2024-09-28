@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz : Démarche Marketing & Définition des Marchés</title>
+    <style>
+        body {
+            font-family: 'Mayan', sans-serif;
+            margin: 0;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #333;
+            text-align: center;
+        }
+        .quiz-container, .summary {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background-image: url('images/back.jpg.webp');
+            background-size: cover;
+            background-position: center;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #000;
+        }
+        .choices {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-left: 20%;
+        }
+        .choices li {
+            margin: 8px 0;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #FF0000;
+            color: white;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #CC0000;
+        }
+        .summary {
+            display: none;
+        }
+        .summary ul {
+            list-style: none;
+            padding: 0;
+        }
+        .summary li {
+            text-align: left;
+            margin-left: 20%;
+            margin-bottom: 10px;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .quiz-container, .summary {
+                max-width: 90%;
+                margin: 20px auto;
+                padding: 15px;
+                border-radius: 10px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+        @media (max-width: 480px) {
+            .quiz-container, .summary {
+                padding: 10px;
+                margin: 10px;
+                border-radius: 10px;
+            }
+            .question {
+                font-size: 16px;
+            }
+            button {
+                font-size: 12px;
+                padding: 6px 12px;
+                border-radius: 10px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .quiz-container, .summary {
+                max-width: 800px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz-container" id="quiz-container">
+    <h2>QCM ENTRAINEMENT - Corporate and Company Law</h2>
+    <div id="question-container">
+        <!-- Les questions seront affichées ici dynamiquement -->
+    </div>
+    <button id="next-button" onclick="nextQuestion()">Suivant</button>
+</div>
+
+<div class="summary" id="summary">
+    <h3>Récapitulatif</h3>
+    <ul id="summary-list">
+        <!-- Le récapitulatif des réponses sera affiché ici -->
+    </ul>
+    <div class="score" id="score"></div>
+    <button onclick="restartQuiz()">Recommencer</button>
+</div>
+
+<script>
+    const quizData = [
+        { question: "What is a company?", choices: ["A personal business venture", "A legal entity created by individuals to run a business, separate from its owners", "A non-profit organization", "A temporary business structure"], correct: 1 },
+        { question: "Which of the following is not a reason to create a company?", choices: ["Limited liability for owners", "Survival after the departure of founders", "Unlimited liability for shareholders", "Easy transferability of shares"], correct: 2 },
+        { question: "What document is similar to a country’s constitution but establishes a company?", choices: ["Contract of Sale", "Charter or Articles of Incorporation", "Financial Statement", "Tax Declaration"], correct: 1 },
+        { question: "Which of the following company types is characterized by limited liability in Europe?", choices: ["Corporation", "Public Limited Company (PLC) or Société Anonyme (SA)", "Sole Proprietorship", "General Partnership"], correct: 1 },
+        { question: "What is the Delaware General Corporation Law known for?", choices: ["High tax rates for corporations", "Low taxes and flexible corporation law", "Strict regulation of public companies", "Requirement of a large number of shareholders"], correct: 1 },
+        { question: "What is the role of the Board of Directors in a corporation?", choices: ["To manage the day-to-day operations", "To develop strategies and make major decisions", "To audit the financial records", "To act as shareholders"], correct: 1 },
+        { question: "Which of the following defines a limited partnership?", choices: ["A partnership where all partners have unlimited liability", "A partnership with at least one general partner who has unlimited liability and limited partners with limited liability", "A partnership with no general partner", "A partnership with equal liability for all partners"], correct: 1 },
+        { question: "What is a key feature of Limited Liability Companies (LLCs)?", choices: ["LLCs are listed on stock exchanges", "Members of LLCs have limited liability for the company's debts", "LLCs are taxed as independent entities", "LLCs do not require any formal documentation"], correct: 1 },
+        { question: "Which company structure is the simplest and most common form of business ownership?", choices: ["Limited Liability Company", "Sole Proprietorship", "Corporation", "Trust"], correct: 1 },
+        { question: "What is the difference between common stock and preferred stock?", choices: ["Common stock has no voting rights, while preferred stock does", "Common stock has general privileges, while preferred stock may have privileges like dividends", "Preferred stockholders bear all liabilities", "Common stock is limited to founders, and preferred stock is for public investors"], correct: 1 },
+        { question: "In the U.S., what document is required to create an LLC?", choices: ["Operating Agreement", "Partnership Agreement", "Charter", "Franchise Contract"], correct: 0 },
+        { question: "What is a close corporation?", choices: ["A corporation with over 500 shareholders", "A corporation whose stock is held by fewer than 30 persons", "A publicly traded corporation", "A government-owned entity"], correct: 1 },
+        { question: "What is joint and several liability in a partnership?", choices: ["Partners are only responsible for their share of the debt", "Partners can be individually responsible for the full debt of the partnership", "Partners are liable for tax obligations only", "Partners have no liability"], correct: 1 },
+        { question: "What is the role of the Trustee in a trust?", choices: ["To establish the trust", "To manage the assets of the trust for the beneficiaries", "To act as the sole beneficiary", "To determine the tax liabilities of the trust"], correct: 1 },
+        { question: "Which of the following is a characteristic of a corporation?", choices: ["It is owned by a single individual", "It has limited liability for its shareholders", "It does not pay taxes", "It cannot enter into contracts"], correct: 1 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let selectedAnswers = [];
+
+    function loadQuestion() {
+        const container = document.getElementById('question-container');
+        container.innerHTML = '';
+
+        const questionData = quizData[currentQuestionIndex];
+        const questionElem = document.createElement('div');
+        questionElem.className = 'question';
+        questionElem.textContent = questionData.question;
+
+        const choicesElem = document.createElement('ul');
+        choicesElem.className = 'choices';
+
+        questionData.choices.forEach((choice, index) => {
+            const choiceElem = document.createElement('li');
+            const choiceInput = document.createElement('input');
+            choiceInput.type = 'radio';
+            choiceInput.name = 'choice';
+            choiceInput.value = index;
+            choiceInput.id = `choice${index}`;
+            
+            const choiceLabel = document.createElement('label');
+            choiceLabel.htmlFor = `choice${index}`;
+            choiceLabel.textContent = choice;
+
+            choiceElem.appendChild(choiceInput);
+            choiceElem.appendChild(choiceLabel);
+            choicesElem.appendChild(choiceElem);
+        });
+
+        container.appendChild(questionElem);
+        container.appendChild(choicesElem);
+    }
+
+    function nextQuestion() {
+        const selectedChoice = document.querySelector('input[name="choice"]:checked');
+        if (!selectedChoice) {
+            alert("Veuillez sélectionner une réponse !");
+            return;
+        }
+
+        selectedAnswers.push(parseInt(selectedChoice.value));
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showSummary();
+        }
+    }
+
+    function showSummary() {
+        document.getElementById('quiz-container').style.display = 'none';
+        const summary = document.getElementById('summary');
+        summary.style.display = 'block';
+
+        const summaryList = document.getElementById('summary-list');
+        summaryList.innerHTML = '';
+
+        let correctAnswers = 0;
+
+        quizData.forEach((q, index) => {
+            const summaryItem = document.createElement('li');
+            summaryItem.innerHTML = `
+                <strong>${q.question}</strong><br>
+                <div style="text-align: left; margin-left: 20%;">
+                    Votre réponse: ${q.choices[selectedAnswers[index]]} - 
+                    ${selectedAnswers[index] === q.correct ? '<span class="correct">Correct</span>' : '<span class="incorrect">Incorrect</span>'}<br>
+                    Bonne réponse: ${q.choices[q.correct]}
+                </div>
+            `;
+            summaryList.appendChild(summaryItem);
+            if (selectedAnswers[index] === q.correct) {
+                correctAnswers++;
+            }
+        });
+
+        document.getElementById('score').textContent = `Score: ${correctAnswers} / ${quizData.length}`;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        selectedAnswers = [];
+        document.getElementById('summary').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        loadQuestion();
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+
+
+
+</html>
